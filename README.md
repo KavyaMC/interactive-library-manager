@@ -1,6 +1,6 @@
-    # Personal Library Manager
+# Personal Library Manager
 
-    ## Overview
+## Overview
 
 Personal Library Manager is a small JavaScript frontend application for managing a personal collection of books.
 
