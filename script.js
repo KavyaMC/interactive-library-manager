@@ -143,15 +143,54 @@ function handleSearch(event) {
 function setupSearchListener() {
     document.getElementById("search-input").addEventListener("input", handleSearch);
 }
-function showAllBooks() { }
-function showUnreadBooks() { }
-function showReadBooks() { }
-function setupFilterListeners() { }
+
+function showAllBooks() {
+    for (let book of bookList.children) {
+        book.style.display = "";
+        currentView = "all";
+    }
+}
+
+function showUnreadBooks() {
+    for (let book of bookList.children) {
+        const checkbox = book.querySelector("input[type='checkbox']");
+
+        if (checkbox.checked) {
+            book.style.display = "none";
+        } else {
+            book.style.display = "";
+            currentView = "unread";
+        }
+    }
+}
+
+function showReadBooks() {
+    for (let book of bookList.children) {
+        const checkbox = book.querySelector("input[type='checkbox']");
+
+        if (checkbox.checked) {
+            book.style.display = "none";
+        } else {
+            book.style.display = "";
+            currentView = "read";
+        }
+    }
+}
+
+function setupFilterListeners() {
+    document.getElementById("show-all")
+        .addEventListener("click", showAllBooks);
+    document.getElementById("show-read")
+        .addEventListener("click", showReadBooks);
+    document.getElementById("show-unread")
+        .addEventListener("click", showUnreadBooks);
+}
 function bootSystem() {
     setupFormListener();
     setupBookListListener();
     setupEditListeners();
     setupSearchListener();
+    setupFilterListeners();
     updateStatistics();
 }
 document.addEventListener("DOMContentLoaded", bootSystem);
