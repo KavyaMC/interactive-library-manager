@@ -35,6 +35,7 @@ function createBookItem(title) {
 
     const span = document.createElement("span");
     span.textContent = title;
+    span.classList.add("book-title");
 
     const deleteBTN = document.createElement("button");
     deleteBTN.classList.add("delete-btn", "btn", "btn-sm", "btn-danger", "float-end");
@@ -92,10 +93,41 @@ function setupBookListListener() {
     bookList.addEventListener("click", handleBookClick);
 }
 
-function enableBookEditing(event) { }
-function finishBookEditing(event) { }
-function handleEditKey(event) { }
-function setupEditListeners() { }
+function enableBookEditing(event) {
+    const target = event.target;
+    if (!target.classList.contains("book-title")) { return; }
+    target.contentEditable = true;
+    target.focus();
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(target);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
+function finishBookEditing(event) {
+    const target = event.target;
+    target.contentEditable = false;
+    const newValue = target.textContent.trim();
+    if (newValue === "") {
+        target.textContent = "Untitled Book";
+        return;
+    }
+    target.textContent = newValue;
+}
+
+function handleEditKey(event) {
+    if (event.key !== "Enter") { return; }
+    event.preventDefault();
+    event.target.blur();
+}
+
+function setupEditListeners() {
+    bookList.addEventListener("dblclick", enableBookEditing);
+    bookList.addEventListener("blur", finishBookEditing, true);
+    bookList.addEventListener("keydown", handleEditKey);
+}
+
 function handleSearch(event) { }
 function setupSearchListener() { }
 function showAllBooks() { }
@@ -105,6 +137,7 @@ function setupFilterListeners() { }
 function bootSystem() {
     setupFormListener();
     setupBookListListener();
+    setupEditListeners();
     updateStatistics();
 }
 document.addEventListener("DOMContentLoaded", bootSystem);
