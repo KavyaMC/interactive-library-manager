@@ -11,7 +11,6 @@ function updateStatistics() {
     const totalBooks = bookList.children.length;
     let readBooks = 0;
     let unreadBooks = 0;
-
     for (let book of bookList.children) {
         const checkBox = book.querySelector("input[type='checkbox']");
 
@@ -30,6 +29,7 @@ function updateStatistics() {
 function createBookItem(title) {
     const listItem = document.createElement("li");
 
+
     const checkBox = document.createElement("input");
     checkBox.type = "checkbox";
 
@@ -45,10 +45,13 @@ function createBookItem(title) {
     listItem.append(checkBox, span, deleteBTN);
 
     return listItem;
+
+
 }
 
 function handleAddBook(event) {
     event.preventDefault();
+
 
     const input = document.getElementById("book-input");
     const title = input.value.trim();
@@ -64,6 +67,9 @@ function handleAddBook(event) {
     input.focus();
 
     updateStatistics();
+    status(`"${title}" added to your library.`);
+
+
 }
 
 function setupFormListener() {
@@ -74,19 +80,27 @@ function setupFormListener() {
 function handleBookClick(event) {
     if (event.target.classList.contains("delete-btn")) {
         const listItem = event.target.parentElement;
+        const title = listItem.querySelector(".book-title").textContent;
+
+
         listItem.remove();
         updateStatistics();
+        status(`"${title}" removed from your library.`);
     } else if (event.target.type === "checkbox") {
+        const titleSpan = event.target.nextElementSibling;
+
         if (event.target.checked) {
-            const titleSpan = event.target.nextElementSibling;
             titleSpan.classList.add("text-decoration-line-through");
             updateStatistics();
+            status(`"${titleSpan.textContent}" marked as read.`);
         } else {
-            const titleSpan = event.target.nextElementSibling;
             titleSpan.classList.remove("text-decoration-line-through");
             updateStatistics();
+            status(`"${titleSpan.textContent}" marked as unread.`);
         }
     }
+
+
 }
 
 function setupBookListListener() {
@@ -109,11 +123,16 @@ function finishBookEditing(event) {
     const target = event.target;
     target.contentEditable = false;
     const newValue = target.textContent.trim();
+
+
     if (newValue === "") {
         target.textContent = "Untitled Book";
         return;
     }
+
     target.textContent = newValue;
+
+
 }
 
 function handleEditKey(event) {
@@ -130,14 +149,19 @@ function setupEditListeners() {
 
 function handleSearch(event) {
     const searchTerm = event.target.value.toLowerCase();
+
+
     for (const book of bookList.children) {
         const title = book.querySelector("span.book-title").textContent.toLowerCase();
+
         if (title.includes(searchTerm)) {
             book.style.display = "";
         } else {
             book.style.display = "none";
         }
     }
+
+
 }
 
 function setupSearchListener() {
@@ -155,6 +179,7 @@ function showUnreadBooks() {
     for (let book of bookList.children) {
         const checkbox = book.querySelector("input[type='checkbox']");
 
+
         if (checkbox.checked) {
             book.style.display = "none";
         } else {
@@ -162,11 +187,14 @@ function showUnreadBooks() {
             currentView = "unread";
         }
     }
+
+
 }
 
 function showReadBooks() {
     for (let book of bookList.children) {
         const checkbox = book.querySelector("input[type='checkbox']");
+
 
         if (checkbox.checked) {
             book.style.display = "none";
@@ -175,16 +203,44 @@ function showReadBooks() {
             currentView = "read";
         }
     }
+
+
 }
 
 function setupFilterListeners() {
     document.getElementById("show-all")
         .addEventListener("click", showAllBooks);
+
+
     document.getElementById("show-read")
         .addEventListener("click", showReadBooks);
+
     document.getElementById("show-unread")
         .addEventListener("click", showUnreadBooks);
+
+
 }
+
+function status(message) {
+    const statusElement = document.getElementById("status");
+    statusElement.textContent = message;
+    statusElement.hidden = false;
+}
+
+function announceLibraryStatus() {
+    const total = totalCount.textContent;
+    const read = readCount.textContent;
+    const unread = unreadCount.textContent;
+    status(
+        `Library status: ${total} total books. ${read} read. ${unread} unread.`
+    );
+}
+
+function setupStatusListener() {
+    document.getElementById("library-status")
+        .addEventListener("click", announceLibraryStatus);
+}
+
 function bootSystem() {
     setupFormListener();
     setupBookListListener();
@@ -192,5 +248,7 @@ function bootSystem() {
     setupSearchListener();
     setupFilterListeners();
     updateStatistics();
+    setupStatusListener();
 }
+
 document.addEventListener("DOMContentLoaded", bootSystem);
