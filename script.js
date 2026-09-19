@@ -37,7 +37,7 @@ function createBookItem(title) {
     span.textContent = title;
 
     const deleteBTN = document.createElement("button");
-    deleteBTN.classList.add("btn", "btn-sm", "btn-danger", "float-end");
+    deleteBTN.classList.add("delete-btn", "btn", "btn-sm", "btn-danger", "float-end");
     deleteBTN.textContent = "Delete";
 
     listItem.classList.add("list-group-item");
@@ -70,8 +70,28 @@ function setupFormListener() {
     form.addEventListener("submit", handleAddBook);
 }
 
-function handleBookClick(event) { }
-function setupBookListListener() { }
+function handleBookClick(event) {
+    if (event.target.classList.contains("delete-btn")) {
+        const listItem = event.target.parentElement;
+        listItem.remove();
+        updateStatistics();
+    } else if (event.target.type === "checkbox") {
+        if (event.target.checked) {
+            const titleSpan = event.target.nextElementSibling;
+            titleSpan.classList.add("text-decoration-line-through");
+            updateStatistics();
+        } else {
+            const titleSpan = event.target.nextElementSibling;
+            titleSpan.classList.remove("text-decoration-line-through");
+            updateStatistics();
+        }
+    }
+}
+
+function setupBookListListener() {
+    bookList.addEventListener("click", handleBookClick);
+}
+
 function enableBookEditing(event) { }
 function finishBookEditing(event) { }
 function handleEditKey(event) { }
@@ -84,6 +104,7 @@ function showReadBooks() { }
 function setupFilterListeners() { }
 function bootSystem() {
     setupFormListener();
+    setupBookListListener();
     updateStatistics();
 }
 document.addEventListener("DOMContentLoaded", bootSystem);
