@@ -6,6 +6,8 @@ Personal Library Manager is a small JavaScript frontend application for managing
 
 It allows users to add books, mark them as Read or Unread, edit titles, delete books, search the library, and filter books by reading status.
 
+You can view it at: [Live interactive library](https://kavyamc.github.io/interactive-library-manager)
+
 ## Technology
 
 - HTML5
