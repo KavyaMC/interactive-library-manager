@@ -128,8 +128,21 @@ function setupEditListeners() {
     bookList.addEventListener("keydown", handleEditKey);
 }
 
-function handleSearch(event) { }
-function setupSearchListener() { }
+function handleSearch(event) {
+    const searchTerm = event.target.value.toLowerCase();
+    for (const book of bookList.children) {
+        const title = book.querySelector("span.book-title").textContent.toLowerCase();
+        if (title.includes(searchTerm)) {
+            book.style.display = "";
+        } else {
+            book.style.display = "none";
+        }
+    }
+}
+
+function setupSearchListener() {
+    document.getElementById("search-input").addEventListener("input", handleSearch);
+}
 function showAllBooks() { }
 function showUnreadBooks() { }
 function showReadBooks() { }
@@ -138,6 +151,7 @@ function bootSystem() {
     setupFormListener();
     setupBookListListener();
     setupEditListeners();
+    setupSearchListener();
     updateStatistics();
 }
 document.addEventListener("DOMContentLoaded", bootSystem);
